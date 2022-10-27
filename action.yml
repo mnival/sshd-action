@@ -1,0 +1,46 @@
+name: "sshd on runner"
+description: "sshd on runner"
+
+inputs:
+  ssh_host:
+    description: "SSH Host"
+    required: true
+  ssh_user:
+    description: "SSH User"
+    required: true
+  ssh_port:
+    description: "SSH Port"
+    required: true
+    default: 22
+  ssh_key:
+    description: "SSH Key"
+    required: true
+  ssh_remote_port:
+    description: "SSH Remote port"
+    required: true
+    default: 2200
+  ssh_remote_command:
+    description: "Command on the remote server to leave the connection open"
+    required: true
+    default: sleep 600
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate SSH config
+      id: ssh
+      uses: mnival/ssh-action@main
+      with:
+        ssh_host: ${{ inputs.ssh_host }}
+        ssh_user: ${{ inputs.ssh_user }}
+        ssh_key: ${{ inputs.ssh_key }}
+
+    - name: Configure authorized_keys
+      run: ssh-keygen -y -f ~/.ssh/${{ steps.ssh.outputs.ssh_config_host }} > ~/.ssh/authorized_keys
+
+    - name: Login information
+      run: |
+        printf "Connect to the server defined in ssh_host and run the following command:\nssh ${USER}@127.0.0.1 -oPort=${{ inputs.ssh_remote_port }}\n"
+
+    - name: Opening the connection to the server and the runner
+      run: ssh -R ${{ inputs.ssh_remote_port }}:127.0.0.1:22 ${{ steps.ssh.outputs.ssh_config_host }} "${{ ssh_remote_command }}"
