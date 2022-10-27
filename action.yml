@@ -36,11 +36,14 @@ runs:
         ssh_key: ${{ inputs.ssh_key }}
 
     - name: Configure authorized_keys
+      shell: bash
       run: ssh-keygen -y -f ~/.ssh/${{ steps.ssh.outputs.ssh_config_host }} > ~/.ssh/authorized_keys
 
     - name: Login information
+      shell: bash
       run: |
         printf "Connect to the server defined in ssh_host and run the following command:\nssh ${USER}@127.0.0.1 -oPort=${{ inputs.ssh_remote_port }}\n"
 
     - name: Opening the connection to the server and the runner
+      shell: bash
       run: ssh -R ${{ inputs.ssh_remote_port }}:127.0.0.1:22 ${{ steps.ssh.outputs.ssh_config_host }} "${{ ssh_remote_command }}"
