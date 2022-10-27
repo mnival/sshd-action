@@ -20,4 +20,4 @@ jobs:
         ssh_host: ${{ secrets.SSH_HOST }}
         ssh_user: ${{ secrets.SSH_USER }}
         ssh_key: ${{ secrets.SSH_KEY }}
-        ssh_remote_command: ssh runner@127.0.0.1 -oPort=2200
+        ssh_remote_command: ssh -oPort=2200 -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null runner@127.0.0.1
