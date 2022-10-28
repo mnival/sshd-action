@@ -37,7 +37,7 @@ runs:
 
     - name: Configure authorized_keys
       shell: bash
-      run: ssh-keygen -y -f ~/.ssh/${{ steps.ssh.outputs.ssh_config_host }} > ~/.ssh/authorized_keys
+      run: ssh-keygen -y -f ~/.ssh/${{ steps.ssh.outputs.ssh_host_alias }} > ~/.ssh/authorized_keys
 
     - name: Login information
       shell: bash
@@ -46,4 +46,4 @@ runs:
 
     - name: Opening the connection to the server and the runner
       shell: bash
-      run: ssh -R ${{ inputs.ssh_remote_port }}:127.0.0.1:22 ${{ steps.ssh.outputs.ssh_config_host }} "${{ inputs.ssh_remote_command }}"
+      run: ssh -R ${{ inputs.ssh_remote_port }}:127.0.0.1:22 ${{ steps.ssh.outputs.ssh_host_alias }} "${{ inputs.ssh_remote_command }}"
